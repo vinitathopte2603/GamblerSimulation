@@ -19,7 +19,7 @@ winningCondition=$(( $INITIAL_STAKE + $(( $INITIAL_STAKE / 100 * $PERCENTAGE_STA
 loosingCondition=$(( $INITIAL_STAKE - $(( $INITIAL_STAKE / 100 * $PERCENTAGE_STAKE )) ))
 
 declare -A gambledAmount
-
+declare -A gamblerSimulator
 function Gamble(){
 	for (( dayCount=1; dayCount<DAYS; dayCount++ ))
 	do
@@ -36,9 +36,11 @@ function Gamble(){
 
 		fi
 	done
-	totalAmount=$(( $finalStake - $INITIAL_STAKE ))
-	gambledAmount[$dayCount]=$totalAmount
-	totalGamblerAmount=$(( $TotalGamblerAmount + $totalAmount ))
+	dailyAmount=$(( $finalStake - $INITIAL_STAKE ))
+	finalDailyAmount=$(( $finalDailyAmount + $dailyAmount ))
+	gambledAmount[$dayCount]=$dailyAmount
+	gamblerSimulator[$dayCount]=$finalDailyAmount
+	totalGamblerAmount=$(( $TotalGamblerAmount + $dailyAmount ))
 	done
 	echo "Gambler resigned for the day"
 
@@ -51,6 +53,22 @@ function Gamble(){
 		else
 			winCount=$(( $winCount + 1 ))
 			winTotalAmount=$(( $winTotalAmount + ${gambledAmount[$data]} ))
+		fi
+	done
+		luckiestValue=$( printf "%s\n" ${gamblerSimulator[@]} | sort -nr | head -1 )
+		unluckiestValue=$( printf "%s\n" ${gamblerSimulator[@]} sort -nr | tail -1 )
+
+		findLuckiestOrUnluckiestDay $luckiestValue $unluckiestValue
+}
+function findLuckiestOrUnluckiestDay(){
+	for data in "${!gamblerSimulator[@]}"
+	do
+		if [[ ${gamblerSimulator[$data]} -eq $1 ]]
+		then
+			echo "Lucky Day" $data
+		elif [[ ${gamblerSimulator[$data]} -eq $2 ]]
+		then
+			echo "Unlucky Day" $data
 		fi
 	done
 }
