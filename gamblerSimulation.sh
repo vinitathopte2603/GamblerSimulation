@@ -10,6 +10,7 @@ WIN=1;
 LOSS=0;
 PERCENTAGE_STAKE=50;
 DAYS=20;
+finalDailyAmount=0;
 winCount=0;
 lossCount=0;
 winTotalAmount=0;
@@ -21,6 +22,8 @@ loosingCondition=$(( $INITIAL_STAKE - $(( $INITIAL_STAKE / 100 * $PERCENTAGE_STA
 declare -A gambledAmount
 declare -A gamblerSimulator
 function Gamble(){
+while [ $finalDailyAmount -ge $LOSS ]
+do
 	for (( dayCount=1; dayCount<DAYS; dayCount++ ))
 	do
 		finalStake=$INITIAL_STAKE;
@@ -59,7 +62,9 @@ function Gamble(){
 		unluckiestValue=$( printf "%s\n" ${gamblerSimulator[@]} sort -nr | tail -1 )
 
 		findLuckiestOrUnluckiestDay $luckiestValue $unluckiestValue
+	done
 }
+
 function findLuckiestOrUnluckiestDay(){
 	for data in "${!gamblerSimulator[@]}"
 	do
