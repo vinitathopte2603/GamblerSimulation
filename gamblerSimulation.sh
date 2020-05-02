@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 var="Welcome to Gambler Simulation"
 echo "$var"
@@ -22,3 +22,6 @@ function Gamble(){
 		return $finalStake
 	fi
 }
+
+Gamble $(($WIN))
+echo "$WIN"
