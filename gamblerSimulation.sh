@@ -8,20 +8,27 @@ DAY=1;
 BET=1;
 WIN=1;
 LOSS=0;
-finalStake=INITIAL_STAKE;
+PERCENTAGE_STAKE=50;
+finalStake=$INITIAL_STAKE;
+winningCondition=$(( $INITIAL_STAKE + $(( $INITIAL_STAKE / 100 * $PERCENTAGE_STAKE )) ))
+loosingCondition=$(( $INITIAL_STAKE - $(( $INITIAL_STAKE / 100 * $PERCENTAGE_STAKE )) ))
+
 
 function Gamble(){
+	while [ $finalStake -lt $winningCondition ] && [ $finalStake -gt $loosingCondition ]
+	do
+ 		randomCheck=$(( RANDOM % 2 ))
 
-	randomCheck=$((RAMDOM%2))
-	if [[ $randomCheck -eq $1 ]]
-	then
-		finalStake=$(( $finalStake + 1 ))
-		return $finalStake
-	else
-		finalStake=$(( $finalStake - 1 ))
-		return $finalStake
-	fi
+		if [[ $randomCheck -eq $1 ]]
+		then
+			finalStake=$(( $finalStake + 1 ))
+		else
+			finalStake=$(( $finalStake - 1 ))
+
+		fi
+	done
+	echo "Gambler resigned for the day"
 }
 
 Gamble $(($WIN))
-echo "$WIN"
+
